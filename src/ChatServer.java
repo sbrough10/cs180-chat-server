@@ -25,6 +25,7 @@ public class ChatServer {
 
 	public ChatServer(User[] users, int maxMessages) {
 		// TODO: Complete the constructor
+
 		this.users = Arrays.asList(users);
 		this.users.add(0, new User("root", "cs180", new SessionCookie(generateUniqueID())));
         msgBuffer = new CircularBuffer(maxMessages);

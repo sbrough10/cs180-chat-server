@@ -16,6 +16,7 @@ public class CircularBuffer {
     }
 
     public void put(String message) {
+        msgNum %= 10000;
         if (msgNum < 10) {
             str = "000" + msgNum + ": " + message;
         }
@@ -29,11 +30,8 @@ public class CircularBuffer {
             str = "" + msgNum + ": " + message;
         }
         messages[tail] = str;
-        if (tail < messages.length - 1) {
-            tail++;
-        } else {
-            tail = 0;
-        }
+        tail++;
+        tail %= message.length();
         if (numAvailable < size) {
             numAvailable++;
         }
@@ -41,8 +39,15 @@ public class CircularBuffer {
 
     public String[] getNewest(int numMessages) {
         String[] newest = new String[numMessages];
-        if (numMessages < numAvailable) {
-            for ()
+        if (numMessages <= numAvailable) {
+            for (int i = 0; i < numMessages - 1; i++) {
+                newest[i] = messages[numAvailable - numMessages + i];
+            }
+        } else {
+            for (int i = 0; i < numMessages - 1; i++) {
+                newest[i] = messages[i];
+            }
         }
+        return newest;
     }
 }

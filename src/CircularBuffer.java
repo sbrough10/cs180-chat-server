@@ -17,19 +17,7 @@ public class CircularBuffer {
 
     public void put(String message) {
         msgNum %= 10000;
-        if (msgNum < 10) {
-            str = "000" + msgNum + ": " + message;
-        }
-        if (msgNum < 100) {
-            str = "00" + msgNum + ": " + message;
-        }
-        if (msgNum < 1000) {
-            str = "0" + msgNum + ": " + message;
-        }
-        if (msgNum < 10000) {
-            str = "" + msgNum + ": " + message;
-        }
-        messages[tail] = str;
+        messages[tail] = String.format("%03d) %s", msgNum, message);
         tail++;
         tail %= message.length();
         if (numAvailable < size) {

@@ -26,7 +26,7 @@ public class ChatServer {
 		// TODO: Complete the constructor
 
 		this.users = Arrays.asList(users);
-		this.users.add(0, new User("root", "cs180", new SessionCookie(generateUniqueID())));
+		this.users.add(0, new User("root", "cs180", null));
         msgBuffer = new CircularBuffer(maxMessages);
 	}
 
@@ -127,26 +127,27 @@ public class ChatServer {
 				if(3 < args.length) {
 					return addUser(args);
 				}
-				return MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR);
+				break;
 			case "USER-LOGIN":
 				if(2 < args.length) {
 					return userLogin(args);
 				}
-                return MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR);
+                break;
 			case "POST-MESSAGE":
 				if(2 < args.length) {
 					// TODO: Add funcationality to get user name from cookie id
 					return postMessage(args, null);
 				}
-                return MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR);
+                break;
 			case "GET-MESSAGES":
 				if(2 < args.length) {
 					return getMessages(args);
 				}
-                return MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR);
+                break;
 			default:
                 return MessageFactory.makeErrorMessage(MessageFactory.UNKNOWN_COMMAND_ERROR);
 		}
+        return MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR);
 	}
 
 	public String addUser(String[] args) {
@@ -158,8 +159,9 @@ public class ChatServer {
 		for(User user : users){
 			if(user.getName().equals(args[1])){
 				if(user.checkPassword(args[2])){
-					// TODO: Complete user-login checks and updating
-					return "SUCCESS\r\n";
+                    long id = generateUniqueID();
+                    user.setCookie(new SessionCookie(id));
+					return "SUCCESS\t" + String.format("%03d", id) + "\r\n";
 				} else {
 					return MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR);
 				}

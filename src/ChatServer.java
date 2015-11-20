@@ -1,7 +1,6 @@
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import com.sun.deploy.util.StringUtils;
+
+import java.util.*;
 
 /**
  * <b> CS 180 - Project 4 - Chat Server Skeleton </b>
@@ -170,12 +169,16 @@ public class ChatServer {
 	}
 
 	public String postMessage(String[] args, String name) {
-		// TODO: Add functionality to post message
-		return null;
+		msgBuffer.put(name + ": " + args[2]);
+		return "SUCCESS\r\n";
 	}
 
 	public String getMessages(String[] args) {
         int msgNum = Integer.parseInt(args[2]);
-		return msgBuffer.getMessages(msgNum);
+        if(msgNum < 0) {
+            String message = "Number of messages cannot be negative.";
+            return MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR, message);
+        }
+		return "SUCCESS\t" + StringUtils.join(Arrays.asList(msgBuffer.getNewest(msgNum)), "\t") + "\r\n";
 	}
 }

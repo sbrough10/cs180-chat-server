@@ -151,17 +151,27 @@ public class ChatServer {
 	}
 
 	public String addUser(String[] args) {
-		// TODO: Add functionality to create new user
-		return null;
+		for(User user : users){
+            if(user.getName().equals(args[2])){
+                return MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+            }
+        }
+        users.add(new User(args[2], args[3], null));
+		return "SUCCESS\r\n";
 	}
 
 	public String userLogin(String[] args) {
 		for(User user : users){
 			if(user.getName().equals(args[1])){
 				if(user.checkPassword(args[2])){
-                    long id = generateUniqueID();
-                    user.setCookie(new SessionCookie(id));
-					return "SUCCESS\t" + String.format("%03d", id) + "\r\n";
+                    SessionCookie cookie = user.getCookie();
+                    if(cookie == null || cookie.hasTimedOut()) {
+                        long id = generateUniqueID();
+                        user.setCookie(new SessionCookie(id));
+                        return String.format("SUCCESS\t%03d\n", id);
+                    } else {
+                        return MessageFactory.makeErrorMessage(MessageFactory.USER_CONNECTED_ERROR);
+                    }
 				} else {
 					return MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR);
 				}
@@ -176,11 +186,10 @@ public class ChatServer {
 	}
 
 	public String getMessages(String[] args) {
-        int msgNum = Integer.parseInt(args[2]);
-        if(msgNum < 0) {
-            String message = "Number of messages cannot be negative.";
-            return MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR, message);
+        String[] msgList = msgBuffer.getNewest(Integer.parseInt(args[2]));
+        if(msgList == null){
+            return MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR);
         }
-		return "SUCCESS\t" + StringUtils.join(Arrays.asList(msgBuffer.getNewest(msgNum)), "\t") + "\r\n";
+		return "SUCCESS\t" + StringUtils.join(Arrays.asList(), "\t") + "\r\n";
 	}
 }

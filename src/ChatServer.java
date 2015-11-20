@@ -23,8 +23,6 @@ public class ChatServer {
     private CircularBuffer msgBuffer;
 
 	public ChatServer(User[] users, int maxMessages) {
-		// TODO: Complete the constructor
-
 		this.users = Arrays.asList(users);
 		this.users.add(0, new User("root", "cs180", null));
         msgBuffer = new CircularBuffer(maxMessages);
@@ -45,6 +43,16 @@ public class ChatServer {
 		} while (!unique);
 		return id;
 	}
+
+    private User getUser(String cookieId){
+        for(User user : users){
+            SessionCookie cookie = user.getCookie();
+            if(cookie != null && !cookie.hasTimedOut() && cookie.getID() == Long.parseLong(cookieId)) {
+                return user;
+            }
+        }
+        return null;
+    }
 
 	/**
 	 * This method begins server execution.
@@ -125,23 +133,32 @@ public class ChatServer {
 		switch(args[0]){
 			case "ADD-USER":
 				if(3 < args.length) {
-					return addUser(args);
+                    if(getUser(args[1]) != null) {
+                        return addUser(args);
+                    }
+                    return MessageFactory.makeErrorMessage(MessageFactory.COOKIE_TIMEOUT_ERROR);
 				}
 				break;
 			case "USER-LOGIN":
 				if(2 < args.length) {
-					return userLogin(args);
+                    return userLogin(args);
 				}
                 break;
 			case "POST-MESSAGE":
 				if(2 < args.length) {
-					// TODO: Add funcationality to get user name from cookie id
-					return postMessage(args, null);
+                    User user = getUser(args[1]);
+                    if(user != null) {
+                        return postMessage(args, user.getName());
+                    }
+                    return MessageFactory.makeErrorMessage(MessageFactory.COOKIE_TIMEOUT_ERROR);
 				}
                 break;
 			case "GET-MESSAGES":
 				if(2 < args.length) {
-					return getMessages(args);
+                    if(getUser(args[1]) != null) {
+					    return getMessages(args);
+                    }
+                    return MessageFactory.makeErrorMessage(MessageFactory.COOKIE_TIMEOUT_ERROR);
 				}
                 break;
 			default:

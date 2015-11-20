@@ -21,11 +21,13 @@ public class ChatServer {
 
 	private List<User> users;
 	private Random idGenerator = new Random();
+    private CircularBuffer msgBuffer;
 
 	public ChatServer(User[] users, int maxMessages) {
 		// TODO: Complete the constructor
 		this.users = Arrays.asList(users);
 		this.users.add(0, new User("root", "cs180", new SessionCookie(generateUniqueID())));
+        msgBuffer = new CircularBuffer(maxMessages);
 	}
 
 	private long generateUniqueID(){
@@ -172,7 +174,7 @@ public class ChatServer {
 	}
 
 	public String getMessages(String[] args) {
-		// TODO: Add functionality to get messages
-		return null;
+        int msgNum = Integer.parseInt(args[2]);
+		return msgBuffer.getMessages(msgNum);
 	}
 }

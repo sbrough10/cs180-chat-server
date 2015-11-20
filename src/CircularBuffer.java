@@ -12,6 +12,7 @@ public class CircularBuffer {
     private int numAvailable = 0;
 
     public CircularBuffer(int size) {
+        this.size = size;
         messages = new String[size];
     }
 

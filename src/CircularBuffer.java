@@ -26,6 +26,9 @@ public class CircularBuffer {
     }
 
     public String[] getNewest(int numMessages) {
+        if (numMessages < 0) {
+            return null;
+        }
         String[] newest = new String[numMessages];
         if (numMessages <= numAvailable) {
             for (int i = 0; i < numMessages - 1; i++) {

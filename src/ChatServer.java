@@ -159,11 +159,11 @@ public class ChatServer {
 					// TODO: Complete user-login checks and updating
 					return "SUCCESS\r\n";
 				} else {
-					return Failure.AUTHENTICATION.toString();
+					return MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR);
 				}
 			}
 		}
-		return Failure.USERNAME_LOOKUP.toString();
+		return MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
 	}
 
 	public String postMessage(String[] args, String name) {

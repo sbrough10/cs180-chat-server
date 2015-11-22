@@ -5,12 +5,12 @@ public class SessionCookie {
     private long id;
     private long lastActivity;
 
-    public SessionCookie(long id){
+    public SessionCookie(long id) {
         this.id = id;
         updateTimeOfActivity();
     }
 
-    public boolean hasTimedOut(){
+    public boolean hasTimedOut() {
         return timeoutLength * 1000 <= System.currentTimeMillis() - lastActivity;
     }
 

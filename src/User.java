@@ -1,11 +1,10 @@
-
 public class User {
-	
-	private String name;
+
+    private String name;
     private String password;
     private SessionCookie cookie;
 
-    public User(String name, String password, SessionCookie cookie){
+    public User(String name, String password, SessionCookie cookie) {
         this.name = name;
         this.password = password;
         this.cookie = cookie;
